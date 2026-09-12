@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Register</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <h1>Create an account</h1>
+    <p class="subtitle">It only takes a minute</p>
+
+    <form id="register-form">
+      <label for="reg-email">Email</label>
+      <input id="reg-email" type="email" required autocomplete="email" />
+      <label for="reg-username">Username</label>
+      <input id="reg-username" type="text" required autocomplete="username" />
+      <label for="reg-password">Password</label>
+      <input id="reg-password" type="password" required autocomplete="new-password" />
+      <button type="submit">Create account</button>
+    </form>
+
+    <div id="auth-msg" class="msg"></div>
+
+    <p class="switch-link">Already have an account? <a href="login.html">Log in</a></p>
+
+    <div class="config">
+      API base URL
+      <input id="api-base" type="text" />
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  wireApiBaseInput();
+
+  const registerForm = document.getElementById('register-form');
+  const authMsg = document.getElementById('auth-msg');
+
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg(authMsg);
+    setLoading(registerForm, true);
+    try {
+      const email = document.getElementById('reg-email').value.trim();
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const data = await apiRequest('/register', {
+        method: 'POST',
+        body: JSON.stringify({ email, username, password })
+      });
+
+      showMsg(authMsg, data.msg || 'You have registered successfully! Redirecting to login…', 'success');
+      registerForm.reset();
+      registerForm.querySelector('button').disabled = true;
+
+      // Give the user a moment to read the message, then send them to login.
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1800);
+    } catch (err) {
+      showMsg(authMsg, err.message, 'error');
+      setLoading(registerForm, false);
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Loading…</title>
+<script src="api.js"></script>
+<script>
+  // Straight redirect — no page to flash here.
+  window.location.replace(getToken() ? 'dashboard.html' : 'login.html');
+</script>
+</head>
+<body>
+</body>
+</html>

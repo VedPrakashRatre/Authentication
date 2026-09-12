@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log in</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Log in to your account</p>
+
+    <form id="login-form">
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" required autocomplete="email" />
+      <label for="login-password">Password</label>
+      <input id="login-password" type="password" required autocomplete="current-password" />
+      <button type="submit">Log in</button>
+    </form>
+
+    <div id="auth-msg" class="msg"></div>
+
+    <p class="switch-link">Don't have an account? <a href="register.html">Register</a></p>
+
+    <div class="config">
+      API base URL
+      <input id="api-base" type="text" />
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  wireApiBaseInput();
+
+  // Already logged in? skip straight to the dashboard.
+  if (getToken()) window.location.replace('dashboard.html');
+
+  const loginForm = document.getElementById('login-form');
+  const authMsg = document.getElementById('auth-msg');
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg(authMsg);
+    setLoading(loginForm, true);
+    try {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const data = await apiRequest('/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      if (!data.token) throw new Error('No token returned from server.');
+      setToken(data.token);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      showMsg(authMsg, err.message, 'error');
+      setLoading(loginForm, false);
+    }
+  });
+</script>
+</body>
+</html>

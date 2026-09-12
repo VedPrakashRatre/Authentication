@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Protected route response</p>
+
+    <div id="loading" class="spinner-text">Loading…</div>
+
+    <div id="content" style="display:none;">
+      <div class="dash-item">
+        <div class="dash-label">Message</div>
+        <div class="dash-value" id="dash-msg">—</div>
+      </div>
+      <div class="dash-item">
+        <div class="dash-label">Secret</div>
+        <div class="dash-value" id="dash-secret">—</div>
+      </div>
+      <button id="logout-btn" class="secondary">Log out</button>
+    </div>
+
+    <div id="dash-error" class="msg"></div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+  const loadingEl = document.getElementById('loading');
+  const contentEl = document.getElementById('content');
+  const dashError = document.getElementById('dash-error');
+
+  if (!getToken()) {
+    window.location.replace('login.html');
+  } else {
+    loadDashboard();
+  }
+
+  async function loadDashboard() {
+    try {
+      const data = await apiRequest('/dashboard', {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      document.getElementById('dash-msg').textContent = data.msg || '—';
+      document.getElementById('dash-secret').textContent = data.secret || '—';
+      loadingEl.style.display = 'none';
+      contentEl.style.display = 'block';
+    } catch (err) {
+      // Token likely invalid/expired
+      clearToken();
+      showMsg(dashError, err.message + ' — redirecting to login…', 'error');
+      loadingEl.style.display = 'none';
+      setTimeout(() => window.location.href = 'login.html', 1500);
+    }
+  }
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    clearToken();
+    window.location.href = 'login.html';
+  });
+</script>
+</body>
+</html>
