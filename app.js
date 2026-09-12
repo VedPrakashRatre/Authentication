@@ -20,9 +20,7 @@ app.use('/api/v3/auth', Router);
 const start = async function(){
     try{
         await connectDB(process.env.MONGOURL);
-        app.listen(port ,()=>{
-            console.log(`server is listening on port ${port}...`)
-        })
+        console.log(`server is listening on port ${port}...`)
     }
     catch(error){
         console.log(error);
