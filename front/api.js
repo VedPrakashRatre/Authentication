@@ -2,7 +2,7 @@
 
 // Change this if your backend runs on a different host/port.
 // Your app.js mounts the router at: app.use('/api/v3/auth', Router)
-const DEFAULT_API_BASE = 'http://localhost:3000/api/v3/auth';
+const DEFAULT_API_BASE = '/api/v3/auth';
 
 function apiBase() {
   return (localStorage.getItem('api_base') || DEFAULT_API_BASE).replace(/\/$/, '');
