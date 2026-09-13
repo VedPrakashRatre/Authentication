@@ -7,7 +7,7 @@ const Router = require('./routes/route');
 const authmiddleware = require('./authentication/auth');
 const connectDB = require('./db/connect')
 
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
 
 const path = require('path');
 const cors = require('cors');
@@ -20,14 +20,22 @@ app.get('/', (req, res) => {
 });
 app.use('/api/v3/auth', Router);
 
-const start = async function(){
-    try{
-        await connectDB(process.env.MONGOURL);
-        console.log(`server is listening on port ${port}...`)
-    }
-    catch(error){
-        console.log(error);
-    }
-}
+// const start = async function(){
+//     try{
+//         await connectDB(process.env.MONGOURL);
+//         console.log(`server is listening on port ${port}...`)
+//     }
+//     catch(error){
+//         console.log(error);
+//     }
+// }
 
-start();
+// start();
+
+connectDB(process.env.MONGOURL)
+    .then(() => console.log('MongoDB connected'))
+    .catch((error) => console.log(error));
+
+// VERY IMPORTANT FOR VERCEL
+
+module.exports = app;

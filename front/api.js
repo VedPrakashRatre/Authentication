@@ -4,13 +4,17 @@
 // Your app.js mounts the router at: app.use('/api/v3/auth', Router)
 const DEFAULT_API_BASE = '/api/v3/auth';
 
+// function apiBase() {
+//   return (localStorage.getItem('api_base') || DEFAULT_API_BASE).replace(/\/$/, '');
+// }
+
 function apiBase() {
-  return (localStorage.getItem('api_base') || DEFAULT_API_BASE).replace(/\/$/, '');
+  return DEFAULT_API_BASE;
 }
 
-function setApiBase(value) {
-  localStorage.setItem('api_base', value.trim());
-}
+// function setApiBase(value) {
+//   localStorage.setItem('api_base', value.trim());
+// }
 
 async function apiRequest(path, options = {}) {
   const res = await fetch(apiBase() + path, {
